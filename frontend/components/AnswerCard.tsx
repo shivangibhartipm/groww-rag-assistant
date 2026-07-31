@@ -36,8 +36,8 @@ export function AnswerCard({
 
   return (
     <div
-      className={`rounded-2xl border bg-white p-4 shadow-[0_1px_3px_rgba(16,24,40,0.04)] ${
-        failed ? "border-[#f3c9c2]" : "border-[#e4ebe8]"
+      className={`rounded-2xl border bg-surface p-4 shadow-[0_1px_3px_rgba(16,24,40,0.04)] ${
+        failed ? "border-danger-soft" : "border-line"
       }`}
     >
       <div className="space-y-2">

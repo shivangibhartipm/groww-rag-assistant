@@ -35,7 +35,7 @@ export function SchemeChoice({
             disabled={disabled}
             title={withScheme(question, scheme)}
             onClick={() => onAsk(withScheme(question, scheme))}
-            className="group flex items-center gap-1.5 rounded-full border border-mint-300 bg-white px-3.5 py-1.5 text-[12.5px] font-medium text-ink-soft transition hover:border-groww hover:text-groww disabled:cursor-not-allowed disabled:opacity-50"
+            className="group flex items-center gap-1.5 rounded-full border border-mint-300 bg-surface px-3.5 py-1.5 text-[12.5px] font-medium text-ink-soft transition hover:border-groww hover:text-groww disabled:cursor-not-allowed disabled:opacity-50"
           >
             {scheme}
             <ArrowRightIcon className="size-3.5 text-ink-muted group-hover:text-groww" />

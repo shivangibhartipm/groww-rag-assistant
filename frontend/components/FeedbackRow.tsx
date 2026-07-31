@@ -24,7 +24,7 @@ interface FeedbackRowProps {
 const BUTTON =
   "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] font-medium whitespace-nowrap transition";
 const IDLE =
-  "border-[#e2e8e5] bg-white text-ink-muted hover:border-groww hover:text-groww";
+  "border-line bg-surface text-ink-muted hover:border-groww hover:text-groww";
 const ACTIVE = "border-groww bg-mint-100 text-groww";
 
 export function FeedbackRow({

@@ -12,7 +12,7 @@ const AssistantApp = dynamic(
     ssr: false,
     loading: () => (
       <div className="flex h-full">
-        <div className="w-[272px] shrink-0 border-r border-[#e2ece7] bg-mint-50" />
+        <div className="w-[272px] shrink-0 border-r border-line bg-mint-50" />
         <div className="flex-1" />
       </div>
     ),

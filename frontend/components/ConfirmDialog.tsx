@@ -25,14 +25,14 @@ export function ConfirmDialog({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-lg border border-[#e2e8e5] px-4 py-2 text-[13px] font-semibold text-ink-soft transition hover:border-groww hover:text-groww"
+          className="rounded-lg border border-line px-4 py-2 text-[13px] font-semibold text-ink-soft transition hover:border-groww hover:text-groww"
         >
           Cancel
         </button>
         <button
           type="button"
           onClick={onConfirm}
-          className="rounded-lg bg-[#c2543f] px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-[#a8432f]"
+          className="rounded-lg bg-danger px-4 py-2 text-[13px] font-semibold text-white transition hover:bg-danger-dark"
         >
           {confirmLabel}
         </button>

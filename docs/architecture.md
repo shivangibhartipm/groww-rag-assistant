@@ -220,6 +220,30 @@ This document outlines the detailed phase-wise architecture for building a Retri
   - If out-of-scope → refuse with educational link
   - Bare factual asks with no scheme named → scheme clarification (Phase 6)
 
+### 5.1a Out-of-Scope Detection
+
+Two checks, in order, both running before retrieval and before scheme
+clarification:
+
+1. **Off-topic terms** — an explicit list of adjacent financial products
+   (stocks, crypto, fixed deposits, PPF, insurance, loans, demat, IPO) plus
+   clearly unrelated subjects. These carry enough finance vocabulary to pass
+   the next check on their own, so they are named directly.
+2. **Domain vocabulary gate** — the query must contain at least one mutual fund
+   term (`fund`, `scheme`, `SIP`, `NAV`, `expense ratio`, `exit load`, `ELSS`,
+   `riskometer`, `benchmark`, `folio`, `capital gains`, a cap size, `HDFC`, and
+   so on). Anything with no such term is out of scope.
+
+The second check exists because a blocklist cannot enumerate every off-topic
+question. "What is the capital of the UK?" matched no listed topic, so it fell
+through to retrieval, was asked to pick a scheme, and was then answered with
+"I don't have information about the capital of the UK for HDFC Equity Fund" —
+a scheme-shaped non-answer to a question that was never about schemes.
+Inverting to an allowlist means an unrecognised subject is refused up front.
+
+Note `capital gains` is a domain term but bare `capital` is not, which is what
+keeps the UK example out while statement-download questions stay in.
+
 ### 5.2 Refusal Response Generation
 - **Template**:
   ```
@@ -257,6 +281,7 @@ Reference design: `screens/GrowwRAGScreen.png`.
   - Official sources shown as structured cards with View links
   - Questions naming no scheme prompt the user to pick one instead of guessing
   - Chat history, feedback and saved answers persisted in `localStorage`
+  - Light and dark themes from one token set (see 6.5)
 
 ### 6.2 UI Layout
 ```
@@ -288,7 +313,8 @@ always leaves one chat in place to land on.
 | Component | Responsibility |
 |---|---|
 | `Sidebar` | Brand, New Chat, recent chats with delete, Saved Answers, About, Facts Only card, Guest User |
-| `AssistantHeader` | Title, subtitle, compliance pills |
+| `AssistantHeader` | Title, subtitle, compliance pills, theme toggle |
+| `ThemeToggle` | Sun/moon button that flips the palette and stores the choice |
 | `AskBar` | Multi-line question input, optional voice dictation, send |
 | `QuickChips` | Popular Questions strip |
 | `Conversation` | User bubbles, assistant cards, loading state, empty state |
@@ -340,7 +366,34 @@ always leaves one chat in place to land on.
   { "indexed_chunks": 6, "schemes": 5 }
   ```
 
-### 6.5 Running the Frontend
+### 6.5 Theming
+
+Every colour is a token declared in `app/globals.css`. Dark mode redefines
+those same tokens under a `.dark` class on `<html>`, so it is a value swap
+rather than a `dark:` variant on each element:
+
+| Token group | Purpose |
+|---|---|
+| `canvas`, `surface` | Page background and raised surfaces (cards, inputs, dialogs) |
+| `mint-50` … `mint-300`, `bubble` | Panel tints and the user chat bubble |
+| `ink`, `ink-soft`, `ink-muted`, `ink-faint`, `moss` | Text hierarchy |
+| `line`, `line-soft` | Borders and dividers |
+| `danger*` | Destructive actions and failed answers |
+| `groww*` | Brand green, lifted in dark so it stays legible on near-black |
+
+Components must not hardcode a hex value or use `bg-white`; anything that does
+stays light when the theme flips. Note `text-white` is intentionally still
+white, since it only ever sits on a filled green or red button.
+
+The choice is stored in `localStorage` under `groww-ai:theme`, defaulting to
+the OS `prefers-color-scheme`. It is applied by a blocking inline script in
+`<head>` (`THEME_INIT_SCRIPT` in `lib/theme.ts`) rather than an effect, because
+effects run after hydration and a dark-mode user would see the light palette
+painted first. `applyTheme` also suppresses transitions for the one frame the
+palette swaps, otherwise the hover `transition` on chips and buttons animates
+the change and the flip arrives as a staggered cross-fade.
+
+### 6.6 Running the Frontend
 ```bash
 # Terminal 1 — FastAPI backend
 uvicorn src.api.main:app --reload --port 8000

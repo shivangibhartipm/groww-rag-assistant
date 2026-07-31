@@ -252,7 +252,7 @@ export function AssistantApp() {
 
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* On phones the drawer is off-canvas, so the brand and a menu live here */}
-        <div className="flex shrink-0 items-center gap-2.5 border-b border-[#e2ece7] bg-white px-3 py-2.5 md:hidden">
+        <div className="flex shrink-0 items-center gap-2.5 border-b border-line bg-surface px-3 py-2.5 md:hidden">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}
@@ -273,7 +273,7 @@ export function AssistantApp() {
               <AssistantHeader />
             </div>
 
-            <div className="sticky top-0 z-10 space-y-3 bg-white/95 pb-3 backdrop-blur">
+            <div className="sticky top-0 z-10 space-y-3 bg-surface/95 pb-3 backdrop-blur">
               <AskBar busy={busy} onAsk={ask} />
               <QuickChips disabled={busy} onAsk={ask} />
             </div>

@@ -61,7 +61,7 @@ export function Sidebar({
       <aside
         // 272px would leave a phone about 100px of chat, so the sidebar only
         // joins the flex row from md up and slides over the content below it.
-        className={`fixed inset-y-0 left-0 z-40 flex w-[272px] shrink-0 flex-col overflow-y-auto border-r border-[#e2ece7] bg-mint-50 px-3 py-4 transition-transform duration-200 md:static md:h-full md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-40 flex w-[272px] shrink-0 flex-col overflow-y-auto border-r border-line bg-mint-50 px-3 py-4 transition-transform duration-200 md:static md:h-full md:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -86,7 +86,7 @@ export function Sidebar({
             onNewChat();
             onClose();
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-lg border border-mint-300 bg-white py-2.5 text-sm font-semibold text-groww transition hover:bg-mint-100"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-mint-300 bg-surface py-2.5 text-sm font-semibold text-groww transition hover:bg-mint-100"
         >
         <PlusIcon className="size-4" />
         New Chat
@@ -126,7 +126,7 @@ export function Sidebar({
                 onClick={() => onDeleteChat(chat.id)}
                 aria-label={`Delete chat: ${chat.title}`}
                 title="Delete chat"
-                className="flex size-6 shrink-0 items-center justify-center rounded-md text-ink-muted/55 transition group-hover:text-ink-muted hover:bg-white hover:!text-[#c2543f]"
+                className="flex size-6 shrink-0 items-center justify-center rounded-md text-ink-muted/55 transition group-hover:text-ink-muted hover:bg-surface hover:!text-danger"
               >
                 <TrashIcon className="size-3.5" />
               </button>
@@ -135,7 +135,7 @@ export function Sidebar({
         })}
       </nav>
 
-        <div className="mt-4 flex flex-col gap-0.5 border-t border-[#e2ece7] pt-2">
+        <div className="mt-4 flex flex-col gap-0.5 border-t border-line pt-2">
           <button
             type="button"
             onClick={() => {
@@ -172,13 +172,13 @@ export function Sidebar({
               <ShieldIcon className="size-4" />
               Facts Only
             </p>
-            <p className="mt-1.5 text-[11.5px] leading-relaxed text-[#3f6b57]">
+            <p className="mt-1.5 text-[11.5px] leading-relaxed text-moss">
               This assistant provides factual information from official documents.
             </p>
             <p className="mt-2 text-[11.5px] font-bold">Not investment advice.</p>
           </div>
 
-          <div className="mt-2.5 flex items-center gap-2.5 rounded-full border border-[#dbe7e1] bg-white py-2 pr-3 pl-2">
+          <div className="mt-2.5 flex items-center gap-2.5 rounded-full border border-line bg-surface py-2 pr-3 pl-2">
             <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-groww text-[11px] font-bold text-white">
               GU
             </span>

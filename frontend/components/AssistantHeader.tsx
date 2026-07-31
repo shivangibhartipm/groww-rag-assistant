@@ -1,4 +1,5 @@
 import { BotIcon, LockIcon, ShieldIcon, SparkleIcon } from "./icons";
+import { ThemeToggle } from "./ThemeToggle";
 
 const PILLS = [
   { label: "Facts Only", icon: ShieldIcon },
@@ -13,7 +14,7 @@ export function AssistantHeader() {
         <BotIcon className="size-6 sm:size-7" />
       </span>
 
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1">
         <h1 className="flex flex-wrap items-center gap-2 text-[20px] font-bold tracking-tight text-ink sm:text-[24px]">
           Mutual Fund Assistant
           <SparkleIcon className="size-4 text-groww sm:size-5" />
@@ -34,6 +35,8 @@ export function AssistantHeader() {
           ))}
         </div>
       </div>
+
+      <ThemeToggle />
     </header>
   );
 }

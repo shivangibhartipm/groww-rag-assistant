@@ -42,7 +42,7 @@ export function SavedAnswersDialog({
           {entries.map((entry) => (
             <li
               key={entry.messageId}
-              className="rounded-xl border border-[#e4ebe8] p-3.5"
+              className="rounded-xl border border-line p-3.5"
             >
               <p className="text-[13px] font-bold text-ink">{entry.question}</p>
               <p className="mt-1.5 whitespace-pre-wrap text-[13px] leading-relaxed text-ink-soft">
@@ -70,7 +70,7 @@ export function SavedAnswersDialog({
                 <button
                   type="button"
                   onClick={() => onOpenChat(entry.chatId)}
-                  className="flex items-center gap-1.5 rounded-full border border-[#e2e8e5] px-3 py-1.5 text-[12px] font-medium text-ink-muted transition hover:border-groww hover:text-groww"
+                  className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-[12px] font-medium text-ink-muted transition hover:border-groww hover:text-groww"
                 >
                   <ChatIcon className="size-3.5" />
                   Open chat
@@ -78,7 +78,7 @@ export function SavedAnswersDialog({
                 <button
                   type="button"
                   onClick={() => onRemove(entry.messageId)}
-                  className="flex items-center gap-1.5 rounded-full border border-[#e2e8e5] px-3 py-1.5 text-[12px] font-medium text-ink-muted transition hover:border-[#e2a99f] hover:text-[#c2543f]"
+                  className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-[12px] font-medium text-ink-muted transition hover:border-danger-border hover:text-danger"
                 >
                   <TrashIcon className="size-3.5" />
                   Remove

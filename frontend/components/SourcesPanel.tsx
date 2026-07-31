@@ -5,7 +5,7 @@ export function SourcesPanel({ sources }: { sources: SourceItem[] }) {
   if (!sources.length) return null;
 
   return (
-    <section className="rounded-2xl border border-[#e4ebe8] bg-white p-3.5">
+    <section className="rounded-2xl border border-line bg-surface p-3.5">
       <div className="mb-2.5 flex items-center justify-between">
         <p className="text-[12.5px] font-bold text-ink">
           Sources ({sources.length})
@@ -19,7 +19,7 @@ export function SourcesPanel({ sources }: { sources: SourceItem[] }) {
             key={source.url}
             className="flex items-center gap-2.5 rounded-xl bg-mint-50 px-3 py-2.5"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white text-groww">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-surface text-groww">
               <DocumentIcon className="size-4" />
             </span>
 
@@ -36,7 +36,7 @@ export function SourcesPanel({ sources }: { sources: SourceItem[] }) {
               href={source.url}
               target="_blank"
               rel="noreferrer"
-              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-[#dfe7e3] bg-white px-2.5 py-1.5 text-[11.5px] font-semibold text-ink-soft transition hover:border-groww hover:text-groww"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-[11.5px] font-semibold text-ink-soft transition hover:border-groww hover:text-groww"
             >
               View
               <ExternalIcon className="size-3" />

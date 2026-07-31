@@ -24,7 +24,7 @@ export function FollowUps({ questions, disabled, onAsk }: FollowUpsProps) {
             type="button"
             disabled={disabled}
             onClick={() => onAsk(question)}
-            className="group flex w-[210px] shrink-0 items-center gap-2 rounded-xl border border-[#dfe7e3] bg-white px-3 py-2.5 text-left transition hover:border-groww hover:bg-mint-50 disabled:cursor-not-allowed disabled:opacity-50"
+            className="group flex w-[210px] shrink-0 items-center gap-2 rounded-xl border border-line bg-surface px-3 py-2.5 text-left transition hover:border-groww hover:bg-mint-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="line-clamp-2 flex-1 text-[12px] leading-snug text-ink-soft group-hover:text-groww">
               {question}

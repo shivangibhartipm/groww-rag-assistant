@@ -21,7 +21,7 @@ export function QuickChips({ disabled, onAsk }: QuickChipsProps) {
             type="button"
             disabled={disabled}
             onClick={() => onAsk(question)}
-            className="shrink-0 rounded-full border border-[#dfe7e3] bg-white px-4 py-1.5 text-[12.5px] font-medium whitespace-nowrap text-ink-soft transition hover:border-groww hover:bg-mint-50 hover:text-groww disabled:cursor-not-allowed disabled:opacity-50"
+            className="shrink-0 rounded-full border border-line bg-surface px-4 py-1.5 text-[12.5px] font-medium whitespace-nowrap text-ink-soft transition hover:border-groww hover:bg-mint-50 hover:text-groww disabled:cursor-not-allowed disabled:opacity-50"
           >
             {question}
           </button>

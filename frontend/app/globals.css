@@ -1,9 +1,19 @@
 @import "tailwindcss";
 
+/*
+ * Every colour a component uses is a token here, so dark mode is a value swap
+ * in the .dark block below rather than a `dark:` variant on each element.
+ * Components must not hardcode hex values or `bg-white`, or they will stay
+ * light when the theme flips.
+ */
 @theme {
   --color-groww: #00b386;
   --color-groww-dark: #009e77;
   --color-groww-deep: #14532d;
+
+  /* Page background and raised surfaces (cards, inputs, dialogs) */
+  --color-canvas: #ffffff;
+  --color-surface: #ffffff;
 
   --color-mint-50: #f1f8f5;
   --color-mint-100: #e4f1eb;
@@ -16,9 +26,64 @@
   --color-ink: #111827;
   --color-ink-soft: #374151;
   --color-ink-muted: #6b7280;
+  --color-ink-faint: #9aa5a0;
+  /* Muted green used for supporting copy on mint panels */
+  --color-moss: #3f6b57;
+
+  --color-danger: #c2543f;
+  --color-danger-dark: #a8432f;
+  --color-danger-soft: #f3c9c2;
+  --color-danger-border: #e2a99f;
+
+  --color-scroll-thumb: #d5e0da;
 
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
+}
+
+/*
+ * Dark palette. The mint scale becomes a set of desaturated green-greys so the
+ * existing mint-on-surface hierarchy still reads, and the ink scale inverts.
+ * Groww green is lifted slightly because the brand value is too dark to sit on
+ * a near-black background at small text sizes.
+ */
+.dark {
+  --color-groww: #2ecfa4;
+  --color-groww-dark: #25b892;
+  --color-groww-deep: #a7e9d1;
+
+  --color-canvas: #0f1512;
+  --color-surface: #171f1c;
+
+  --color-mint-50: #141b18;
+  --color-mint-100: #1d2724;
+  --color-mint-200: #26332e;
+  --color-mint-300: #35473f;
+  --color-bubble: #1f3a30;
+
+  --color-line: #2a3531;
+  --color-line-soft: #222b28;
+  --color-ink: #e8efec;
+  --color-ink-soft: #c2ccc8;
+  --color-ink-muted: #8b9995;
+  --color-ink-faint: #6d7a76;
+  --color-moss: #9dc4b2;
+
+  --color-danger: #e0705a;
+  --color-danger-dark: #c95a44;
+  --color-danger-soft: #3a201b;
+  --color-danger-border: #5c342c;
+
+  --color-scroll-thumb: #33403b;
+
+  color-scheme: dark;
+}
+
+/* Set only while the theme swaps; see applyTheme in lib/theme.ts */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
 }
 
 /* Horizontal chip strips scroll by chevron, so their bar is redundant */
@@ -37,7 +102,7 @@
   }
 
   body {
-    background: #ffffff;
+    background: var(--color-canvas);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -46,14 +111,14 @@
   /* Slim scrollbars so the two panes feel like one app surface */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #d5e0da transparent;
+    scrollbar-color: var(--color-scroll-thumb) transparent;
   }
   *::-webkit-scrollbar {
     width: 8px;
     height: 8px;
   }
   *::-webkit-scrollbar-thumb {
-    background: #d5e0da;
+    background: var(--color-scroll-thumb);
     border-radius: 999px;
   }
   *::-webkit-scrollbar-track {

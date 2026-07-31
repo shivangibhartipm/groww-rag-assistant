@@ -38,7 +38,7 @@ export function AskBar({ busy, onAsk }: AskBarProps) {
         event.preventDefault();
         submit();
       }}
-      className="flex items-end gap-1 rounded-2xl border border-[#dfe7e3] bg-white py-2 pr-2 pl-4 shadow-[0_1px_3px_rgba(16,24,40,0.04)] focus-within:border-groww"
+      className="flex items-end gap-1 rounded-2xl border border-line bg-surface py-2 pr-2 pl-4 shadow-[0_1px_3px_rgba(16,24,40,0.04)] focus-within:border-groww"
     >
       <textarea
         ref={inputRef}
@@ -54,7 +54,7 @@ export function AskBar({ busy, onAsk }: AskBarProps) {
         }}
         placeholder="Ask anything about mutual funds..."
         aria-label="Ask a question"
-        className="max-h-40 flex-1 resize-none bg-transparent py-2 text-[14px] text-ink outline-none placeholder:text-[#9aa5a0] disabled:opacity-60"
+        className="max-h-40 flex-1 resize-none bg-transparent py-2 text-[14px] text-ink outline-none placeholder:text-ink-faint disabled:opacity-60"
       />
 
       {voice.supported && (

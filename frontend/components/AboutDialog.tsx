@@ -82,7 +82,7 @@ export function AboutDialog({
                 key={item}
                 className="flex items-start gap-1.5 text-[12.5px] leading-snug text-ink-soft"
               >
-                <CloseIcon className="mt-0.5 size-3.5 shrink-0 text-[#c2543f]" />
+                <CloseIcon className="mt-0.5 size-3.5 shrink-0 text-danger" />
                 {item}
               </li>
             ))}

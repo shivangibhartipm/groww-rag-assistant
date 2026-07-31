@@ -66,7 +66,7 @@ export function Conversation({
                 <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-ink">
                   {message.text}
                 </p>
-                <p className="mt-1 text-right text-[11px] text-[#4b7a66]">
+                <p className="mt-1 text-right text-[11px] text-moss">
                   {message.time}
                 </p>
               </div>
@@ -137,7 +137,7 @@ export function Conversation({
       {busy && (
         <div className="flex gap-2.5">
           <BotAvatar />
-          <div className="flex items-center gap-2 rounded-2xl border border-[#e4ebe8] bg-white px-4 py-3">
+          <div className="flex items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-3">
             <span className="flex gap-1">
               {[0, 1, 2].map((dot) => (
                 <span

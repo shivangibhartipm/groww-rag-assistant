@@ -39,7 +39,7 @@ export function ScrollRow({ children }: { children: React.ReactNode }) {
           onClick={() =>
             trackRef.current?.scrollBy({ left: 260, behavior: "smooth" })
           }
-          className="flex size-7 shrink-0 items-center justify-center rounded-full border border-[#dfe7e3] bg-white text-ink-muted transition hover:border-groww hover:text-groww"
+          className="flex size-7 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-ink-muted transition hover:border-groww hover:text-groww"
         >
           <ChevronRightIcon className="size-4" />
         </button>
