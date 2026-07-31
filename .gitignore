@@ -1,0 +1,21 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Re-fetched on every pipeline run
+data/raw/
+
+# ~90 MB of model weights, downloaded by scripts/fetch_model.py during the
+# build. Pinned to a revision there, so this is reproducible without git.
+models/
+
+# data/processed/ and data/vector_index/ are committed on purpose: the daily
+# refresh workflow publishes them and deployments read them straight from git.

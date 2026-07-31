@@ -1,0 +1,36 @@
+# Runtime dependencies for the API and the corpus pipeline.
+#
+# These mirror the environment that data/vector_index was built with. ChromaDB
+# and the embedding stack are pinned exactly: the pipeline that writes the
+# index and the API that reads it must agree on the storage format and the
+# embedding model, or retrieval silently returns nothing useful.
+
+# API
+fastapi==0.136.1
+uvicorn==0.46.0
+python-dotenv==1.2.2
+
+# LLM client (llm_client builds its own httpx.Client for the TLS context)
+groq==1.5.0
+httpx==0.28.1
+
+# Retrieval. The embedder runs all-MiniLM-L6-v2 on onnxruntime rather than
+# sentence-transformers: identical weights, but without PyTorch's ~500 MB
+# resident footprint and Linux CUDA wheels. ChromaDB already requires
+# onnxruntime, so only tokenizers is genuinely new here.
+chromadb==1.5.9
+onnxruntime==1.28.0
+tokenizers==0.22.2
+numpy==1.26.4
+
+# Fetches the model in scripts/fetch_model.py (build time, not per request)
+huggingface-hub==1.26.0
+
+# Corpus scraping. The extractor parses with the stdlib html.parser, so lxml
+# is deliberately absent.
+requests>=2.32.2
+beautifulsoup4==4.14.3
+
+# CA bundles for groww.in, HuggingFace and Groq
+certifi==2026.4.22
+truststore==0.10.4

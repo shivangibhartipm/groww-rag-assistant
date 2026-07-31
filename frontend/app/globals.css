@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-groww: #00b386;
+  --color-groww-dark: #009e77;
+  --color-groww-deep: #14532d;
+
+  --color-mint-50: #f1f8f5;
+  --color-mint-100: #e4f1eb;
+  --color-mint-200: #d8ece2;
+  --color-mint-300: #b9dfd0;
+  --color-bubble: #d8f0e4;
+
+  --color-line: #e5eae8;
+  --color-line-soft: #eef2f0;
+  --color-ink: #111827;
+  --color-ink-soft: #374151;
+  --color-ink-muted: #6b7280;
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Horizontal chip strips scroll by chevron, so their bar is redundant */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Kept in the base layer so the no-scrollbar utility can still override it */
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    background: #ffffff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Slim scrollbars so the two panes feel like one app surface */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #d5e0da transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #d5e0da;
+    border-radius: 999px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

@@ -1,0 +1,141 @@
+"use client";
+
+import { GrowwLogo } from "./GrowwLogo";
+import {
+  BookmarkIcon,
+  ChatIcon,
+  InfoIcon,
+  PlusIcon,
+  ShieldIcon,
+  TrashIcon,
+} from "./icons";
+import type { Chat } from "@/lib/types";
+
+interface SidebarProps {
+  chats: Chat[];
+  activeChatId: string;
+  savedCount: number;
+  onNewChat: () => void;
+  onSelectChat: (id: string) => void;
+  onDeleteChat: (id: string) => void;
+  onOpenSaved: () => void;
+  onOpenAbout: () => void;
+}
+
+export function Sidebar({
+  chats,
+  activeChatId,
+  savedCount,
+  onNewChat,
+  onSelectChat,
+  onDeleteChat,
+  onOpenSaved,
+  onOpenAbout,
+}: SidebarProps) {
+  return (
+    <aside className="flex h-full w-[272px] shrink-0 flex-col overflow-y-auto border-r border-[#e2ece7] bg-mint-50 px-3 py-4">
+      <div className="mb-4 flex items-center gap-2.5 px-1">
+        <GrowwLogo className="size-8 shrink-0" />
+        <span className="text-lg font-bold text-ink">
+          Groww <span className="text-groww">AI</span>
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={onNewChat}
+        className="flex w-full items-center justify-center gap-2 rounded-lg border border-mint-300 bg-white py-2.5 text-sm font-semibold text-groww transition hover:bg-mint-100"
+      >
+        <PlusIcon className="size-4" />
+        New Chat
+      </button>
+
+      {chats.length > 0 && (
+        <p className="mt-5 mb-1.5 px-1 text-xs font-bold text-ink-soft">
+          Recent Chats
+        </p>
+      )}
+      <nav className="flex flex-col gap-0.5">
+        {chats.map((chat) => {
+          const isActive = chat.id === activeChatId;
+          return (
+            <div
+              key={chat.id}
+              className={`group flex items-center rounded-lg pr-1 transition ${
+                isActive ? "bg-mint-200" : "hover:bg-mint-100"
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => onSelectChat(chat.id)}
+                className={`flex min-w-0 flex-1 items-start gap-2.5 py-2 pl-2.5 text-left text-[13px] leading-snug ${
+                  isActive ? "font-semibold text-ink" : "text-ink-soft"
+                }`}
+              >
+                <ChatIcon className="mt-px size-4 shrink-0 opacity-55" />
+                <span className="line-clamp-2">{chat.title}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onDeleteChat(chat.id)}
+                aria-label={`Delete chat: ${chat.title}`}
+                title="Delete chat"
+                className="flex size-6 shrink-0 items-center justify-center rounded-md text-ink-muted/55 transition group-hover:text-ink-muted hover:bg-white hover:!text-[#c2543f]"
+              >
+                <TrashIcon className="size-3.5" />
+              </button>
+            </div>
+          );
+        })}
+      </nav>
+
+      <div className="mt-4 flex flex-col gap-0.5 border-t border-[#e2ece7] pt-2">
+        <button
+          type="button"
+          onClick={onOpenSaved}
+          className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] text-ink-soft transition hover:bg-mint-100 hover:text-groww"
+        >
+          <BookmarkIcon className="size-4 shrink-0 opacity-55" />
+          <span className="flex-1">Saved Answers</span>
+          {savedCount > 0 && (
+            <span className="rounded-full bg-mint-200 px-1.5 text-[11px] font-semibold text-groww-deep">
+              {savedCount}
+            </span>
+          )}
+        </button>
+
+        <button
+          type="button"
+          onClick={onOpenAbout}
+          className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] text-ink-soft transition hover:bg-mint-100 hover:text-groww"
+        >
+          <InfoIcon className="size-4 shrink-0 opacity-55" />
+          <span className="flex-1">About Groww AI</span>
+        </button>
+      </div>
+
+      <div className="mt-auto pt-4">
+        <div className="rounded-xl bg-mint-100 p-3.5 text-groww-deep">
+          <p className="flex items-center gap-1.5 text-[13px] font-bold">
+            <ShieldIcon className="size-4" />
+            Facts Only
+          </p>
+          <p className="mt-1.5 text-[11.5px] leading-relaxed text-[#3f6b57]">
+            This assistant provides factual information from official documents.
+          </p>
+          <p className="mt-2 text-[11.5px] font-bold">Not investment advice.</p>
+        </div>
+
+        <div className="mt-2.5 flex items-center gap-2.5 rounded-full border border-[#dbe7e1] bg-white py-2 pr-3 pl-2">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-groww text-[11px] font-bold text-white">
+            GU
+          </span>
+          <span className="flex-1 text-[13px] font-semibold text-ink">
+            Guest User
+          </span>
+        </div>
+      </div>
+    </aside>
+  );
+}

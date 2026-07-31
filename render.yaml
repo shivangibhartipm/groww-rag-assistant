@@ -1,0 +1,29 @@
+# Render Blueprint for the FastAPI backend.
+# Dashboard -> New -> Blueprint -> connect this repository.
+# Spec: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: groww-rag-api
+    runtime: python
+    plan: free
+    # Closest region to India; Oregon is Render's default
+    region: singapore
+
+    # The model weights are not a pip package. Fetching them here rather than
+    # lazily means the first request does not wait on a 90 MB download, and a
+    # broken download fails the deploy instead of the answers.
+    buildCommand: pip install -r requirements.txt && python scripts/fetch_model.py
+
+    # Render injects $PORT. The hardcoded 8000 in main.py's __main__ block is
+    # only used when running the file directly and never applies here.
+    startCommand: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
+
+    # Cheap endpoint that does not build the RAG pipeline, so the health check
+    # passes without waiting for the embedding model to load.
+    healthCheckPath: /health
+
+    envVars:
+      # The Python version comes from .python-version (3.11). Render now
+      # defaults new services to 3.14, which this dependency set predates.
+      - key: GROQ_API_KEY
+        sync: false # Set in the dashboard; never committed

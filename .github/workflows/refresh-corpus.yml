@@ -1,0 +1,62 @@
+name: Refresh corpus
+
+on:
+  # 09:30 IST. GitHub cron is UTC only and IST is UTC+5:30, so 04:00 UTC.
+  # Scheduled runs can start late when GitHub is busy; they are never early.
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Never let two rebuilds race for the same commit
+concurrency:
+  group: refresh-corpus
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # The model is pinned to a revision, so the key only changes when that does
+      - name: Cache the embedding model
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: onnx-all-MiniLM-L6-v2-1110a243
+
+      # No-op on a cache hit. The corpus must be embedded with the same model
+      # the API serves with, so this runs from the same pinned revision.
+      - name: Fetch the embedding model
+        run: python scripts/fetch_model.py
+
+      # Exits non-zero on a partial scrape, an unavailable embedder, or a failed
+      # smoke query, which leaves the committed index untouched.
+      - name: Rebuild and verify the corpus
+        run: python scripts/refresh_corpus.py --clean
+
+      - name: Commit the refreshed corpus
+        run: |
+          if [ -z "$(git status --porcelain -- data/processed)" ]; then
+            echo "Scheme facts unchanged; discarding the rebuild."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/processed data/vector_index
+          git commit -m "chore: refresh Groww corpus ($(date -u +%Y-%m-%d))"
+          git push

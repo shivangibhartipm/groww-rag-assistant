@@ -1,0 +1,7 @@
+# Local development and testing only. Not installed on Render.
+-r requirements.txt
+
+pytest==9.1.1
+
+# Legacy Streamlit UI in app.py, superseded by frontend/
+streamlit==1.27.0
