@@ -62,6 +62,44 @@ class RefusalHandler:
          'asks for a prediction'),
     ]
     
+    # Financial topics that are adjacent to mutual funds but not answerable here.
+    # These carry enough fund vocabulary to slip past DOMAIN_TERMS on their own.
+    OFF_TOPIC_TERMS = [
+        r'\bstocks?\b', r'\bshares?\b', r'\bequity\s+shares?\b',
+        r'\bcrypto\w*\b', r'\bbitcoin\b',
+        r'\breal\s+estate\b', r'\bproperty\b',
+        r'\bfixed\s+deposits?\b', r'\bfds?\b', r'\brds?\b',
+        r'\bppf\b', r'\bepf\b', r'\bnps\b',
+        r'\binsurance\b', r'\bpolicy\s+premium\b',
+        r'\bloans?\b', r'\bcredit\s+cards?\b', r'\bbank\s+accounts?\b',
+        r'\btrading\b', r'\bdemat\b', r'\bipo\b', r'\bfutures?\s+and\s+options?\b',
+        r'\bweather\b', r'\bpolitics\b', r'\bsports\b', r'\bentertainment\b',
+    ]
+
+    # Vocabulary that marks a question as being about mutual funds at all.
+    # A blocklist can never enumerate every off-topic question ("what is the
+    # capital of the UK?"), so anything with no term from this list is treated
+    # as out of scope rather than being sent down the retrieval path.
+    DOMAIN_TERMS = [
+        r'\bmutual\s+funds?\b', r'\bfunds?\b', r'\bschemes?\b', r'\bplans?\b',
+        r'\bsip\b', r'\bstp\b', r'\bswp\b', r'\blumpsum\b',
+        r'\bnav\b', r'\baum\b', r'\bamc\b', r'\bnfo\b', r'\bfolio\b',
+        r'\belss\b', r'\btax\s+saver\b', r'\block[-\s]?in\b',
+        r'\bexpense\s+ratio\b', r'\bexit\s+load\b', r'\bentry\s+load\b',
+        r'\briskometer\b', r'\brisk\s+(level|profile|rating)\b',
+        r'\bbenchmark\b', r'\bindex\b',
+        r'\bfund\s+manager\b', r'\bmanagers?\b',
+        r'\bunits?\b', r'\bredeem\w*\b', r'\bredemption\b',
+        r'\bcapital\s+gains?\b', r'\bstatements?\b', r'\bfactsheets?\b',
+        r'\bportfolio\b', r'\bholdings?\b',
+        r'\b(direct|regular|growth|dividend)\s+plan\b', r'\bidcw\b',
+        r'\bcagr\b', r'\bxirr\b', r'\breturns?\b',
+        r'\binvest\w*\b', r'\bkyc\b',
+        r'\bhdfc\b', r'\bgroww\b', r'\bamfi\b', r'\bsebi\b',
+        r'\b(large|mid|small|flexi|multi)[-\s]?cap\b', r'\bfocused\b',
+        r'\bdownload\b',
+    ]
+
     # Educational links
     AMFI_EDUCATION_LINK = "https://www.amfiindia.com/investor-education"
     SEBI_EDUCATION_LINK = "https://investor.sebi.gov.in/"
@@ -72,6 +110,8 @@ class RefusalHandler:
             (re.compile(pattern, re.IGNORECASE), reason)
             for pattern, reason in self.ADVISORY_PATTERNS
         ]
+        self._off_topic = re.compile('|'.join(self.OFF_TOPIC_TERMS), re.IGNORECASE)
+        self._domain = re.compile('|'.join(self.DOMAIN_TERMS), re.IGNORECASE)
         logger.info("Refusal handler initialized")
     
     def detect_advisory_query(self, query: str) -> Dict:
@@ -116,40 +156,31 @@ class RefusalHandler:
         Returns:
             Detection result
         """
-        out_of_scope_topics = [
-            r'\bstock\b',
-            r'\bshare\b',
-            r'\bcrypto\b',
-            r'\bbitcoin\b',
-            r'\breal estate\b',
-            r'\bgold\b',
-            r'\bfd\b',
-            r'\bfixed deposit\b',
-            r'\bppf\b',
-            r'\bepf\b',
-            r'\binsurance\b',
-            r'\bloan\b',
-            r'\bcredit card\b',
-            r'\bbank account\b',
-            r'\btrading\b',
-            r'\bdemat\b',
-            r'\bipo\b',
-            r'\bweather\b',
-            r'\bnews\b',
-            r'\bpolitics\b',
-            r'\bsports\b',
-            r'\bentertainment\b'
-        ]
-        
-        out_of_scope_regex = re.compile('|'.join(out_of_scope_topics), re.IGNORECASE)
-        matches = out_of_scope_regex.findall(query)
-        
-        is_out_of_scope = len(matches) > 0
-        
+        off_topic = [m for m in self._off_topic.findall(query) if m]
+        if off_topic:
+            return {
+                'query': query,
+                'is_out_of_scope': True,
+                'matched_topics': off_topic,
+                'basis': 'off_topic_term',
+            }
+
+        # No mutual fund vocabulary at all. Answering these means retrieving the
+        # nearest fact card regardless, which is how "what is the capital of the
+        # UK?" ended up being asked to pick a scheme and then answered against one.
+        if not self._domain.search(query):
+            return {
+                'query': query,
+                'is_out_of_scope': True,
+                'matched_topics': [],
+                'basis': 'no_domain_term',
+            }
+
         return {
             'query': query,
-            'is_out_of_scope': is_out_of_scope,
-            'matched_topics': matches
+            'is_out_of_scope': False,
+            'matched_topics': [],
+            'basis': None,
         }
     
     def should_refuse(self, query: str) -> Dict:
