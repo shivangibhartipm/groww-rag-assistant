@@ -597,11 +597,15 @@ Because Root Directory is `frontend`, Vercel ignores commits that only touch
 paths outside it — the daily corpus commits from Phase 8 do not trigger
 pointless frontend rebuilds.
 
-`app/api/query/route.ts` declares `maxDuration = 60` and aborts its upstream
-fetch at 55s. Vercel terminates a route handler that overruns its limit, which
-would surface as a platform error page rather than the handled 503 the UI knows
-how to render. Section 9.7 covers why that 60s ceiling interacts badly with a
-cold Render instance.
+Both route handlers declare `maxDuration = 120` and abort their upstream fetch
+at 115s. Vercel terminates a route handler that overruns its limit, which would
+surface as a platform error page rather than the handled 503 the UI knows how to
+render, so the abort is always set below the ceiling.
+
+The ceiling is sized for a cold Render instance rather than a warm one: Hobby
+permits up to 300s, and 120 leaves room for a 30–60s spin-up followed by an
+answer. At 60s the first request after idle failed even though nothing was
+broken (Section 9.7).
 
 ### 9.5 First Deploy Order
 
@@ -641,8 +645,10 @@ delays then stack on the next request:
    files already on disk from the build, not a download, so it is seconds
    rather than the minute-plus a cold HuggingFace fetch would cost.
 
-Combined, the first request after idle can exceed the 60s ceiling on Vercel's
-route handler, so the user sees a handled 503 rather than an answer.
+Combined, the first request after idle used to exceed the 60s ceiling on
+Vercel's route handler, so the user saw a handled 503 rather than an answer.
+Raising the ceiling to 120s (Section 9.4) absorbs this, at the cost of a slow
+first response rather than a failed one.
 
 Two things soften this. The frontend calls `/stats` on page load, so opening the
 app starts warming the backend before anyone types. And a keep-alive ping from

@@ -4,10 +4,12 @@ const BACKEND_URL = process.env.BACKEND_URL ?? "http://127.0.0.1:8000";
 
 // Vercel caps how long a route handler may run; exceeding it kills the
 // function and the browser gets a platform error page instead of our JSON.
-export const maxDuration = 60;
+// Hobby allows up to 300s. 120 covers a Render free instance waking from its
+// 15-minute spin-down (30-60s) and then answering, which 60 did not.
+export const maxDuration = 120;
 
 // Abort before maxDuration so a slow backend surfaces as a handled 503
-const UPSTREAM_TIMEOUT_MS = 55_000;
+const UPSTREAM_TIMEOUT_MS = 115_000;
 
 /** Proxies the assistant query so the backend stays server-side and CORS-free. */
 export async function POST(request: Request) {
