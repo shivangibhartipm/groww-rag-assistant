@@ -62,7 +62,7 @@ export function Conversation({
         if (message.role === "user") {
           return (
             <div key={message.id} className="flex justify-end gap-2.5">
-              <div className="max-w-[76%] rounded-2xl rounded-br-md bg-bubble px-4 py-2.5">
+              <div className="max-w-[85%] rounded-2xl rounded-br-md bg-bubble px-4 py-2.5 sm:max-w-[76%]">
                 <p className="whitespace-pre-wrap text-[14px] leading-relaxed text-ink">
                   {message.text}
                 </p>

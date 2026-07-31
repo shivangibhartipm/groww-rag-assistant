@@ -7,10 +7,11 @@ import { AssistantHeader } from "./AssistantHeader";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { Conversation } from "./Conversation";
 import type { Verdict } from "./FeedbackRow";
+import { GrowwLogo } from "./GrowwLogo";
 import { QuickChips } from "./QuickChips";
 import { SavedAnswersDialog } from "./SavedAnswersDialog";
 import { Sidebar } from "./Sidebar";
-import { ShieldIcon } from "./icons";
+import { MenuIcon, ShieldIcon } from "./icons";
 import { askAssistant, fetchStats } from "@/lib/api";
 import { collectSaved } from "@/lib/saved";
 import type { Chat, IndexStats, Message } from "@/lib/types";
@@ -88,6 +89,7 @@ export function AssistantApp() {
   const [busy, setBusy] = useState(false);
   const [dialog, setDialog] = useState<Dialog>(null);
   const [pendingDelete, setPendingDelete] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [stats, setStats] = useState<IndexStats>({
     indexed_chunks: 0,
     schemes: 0,
@@ -234,11 +236,13 @@ export function AssistantApp() {
   const recentChats = chats.filter((chat) => chat.messages.length > 0);
 
   return (
-    <div className="flex h-full">
+    <div className="flex h-full min-w-0">
       <Sidebar
         chats={recentChats}
         activeChatId={activeChat.id}
         savedCount={savedEntries.length}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
         onNewChat={startNewChat}
         onSelectChat={selectChat}
         onDeleteChat={requestDeleteChat}
@@ -246,43 +250,61 @@ export function AssistantApp() {
         onOpenAbout={() => setDialog("about")}
       />
 
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto w-full max-w-4xl px-8 pb-10">
-          <div className="pt-6 pb-4">
-            <AssistantHeader />
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        {/* On phones the drawer is off-canvas, so the brand and a menu live here */}
+        <div className="flex shrink-0 items-center gap-2.5 border-b border-[#e2ece7] bg-white px-3 py-2.5 md:hidden">
+          <button
+            type="button"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
+            className="flex size-9 items-center justify-center rounded-full text-ink-soft transition hover:bg-mint-50 hover:text-groww"
+          >
+            <MenuIcon className="size-5" />
+          </button>
+          <GrowwLogo className="size-7 shrink-0" />
+          <span className="text-[15px] font-bold text-ink">
+            Groww <span className="text-groww">AI</span>
+          </span>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-4xl px-4 pb-10 sm:px-6 md:px-8">
+            <div className="pt-4 pb-3 md:pt-6 md:pb-4">
+              <AssistantHeader />
+            </div>
+
+            <div className="sticky top-0 z-10 space-y-3 bg-white/95 pb-3 backdrop-blur">
+              <AskBar busy={busy} onAsk={ask} />
+              <QuickChips disabled={busy} onAsk={ask} />
+            </div>
+
+            <div className="pt-3">
+              <Conversation
+                messages={messages}
+                busy={busy}
+                feedback={feedback}
+                saved={saved}
+                onAsk={ask}
+                onVerdict={(messageId, verdict) =>
+                  setFeedback((current) => ({ ...current, [messageId]: verdict }))
+                }
+                onSave={(messageId) =>
+                  setSaved((current) => ({
+                    ...current,
+                    [messageId]: !current[messageId],
+                  }))
+                }
+              />
+            </div>
+
+            <p className="mt-8 flex items-start justify-center gap-1.5 px-2 text-center text-[11.5px] leading-relaxed text-ink-muted sm:items-center">
+              <ShieldIcon className="mt-0.5 size-3.5 shrink-0 sm:mt-0" />
+              Groww AI can make mistakes. Please verify important information from
+              official documents.
+            </p>
+
+            <div ref={bottomRef} />
           </div>
-
-          <div className="sticky top-0 z-10 space-y-3 bg-white/95 pb-3 backdrop-blur">
-            <AskBar busy={busy} onAsk={ask} />
-            <QuickChips disabled={busy} onAsk={ask} />
-          </div>
-
-          <div className="pt-3">
-            <Conversation
-              messages={messages}
-              busy={busy}
-              feedback={feedback}
-              saved={saved}
-              onAsk={ask}
-              onVerdict={(messageId, verdict) =>
-                setFeedback((current) => ({ ...current, [messageId]: verdict }))
-              }
-              onSave={(messageId) =>
-                setSaved((current) => ({
-                  ...current,
-                  [messageId]: !current[messageId],
-                }))
-              }
-            />
-          </div>
-
-          <p className="mt-8 flex items-center justify-center gap-1.5 text-center text-[11.5px] leading-relaxed text-ink-muted">
-            <ShieldIcon className="size-3.5 shrink-0" />
-            Groww AI can make mistakes. Please verify important information from
-            official documents.
-          </p>
-
-          <div ref={bottomRef} />
         </div>
       </main>
 

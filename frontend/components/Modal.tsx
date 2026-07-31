@@ -28,7 +28,7 @@ export function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/25 p-6"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/25 p-0 sm:items-center sm:p-6"
       onClick={onClose}
     >
       <div
@@ -36,8 +36,8 @@ export function Modal({
         aria-modal="true"
         aria-label={title}
         onClick={(event) => event.stopPropagation()}
-        className={`flex max-h-[80vh] w-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_20px_60px_rgba(16,24,40,0.18)] ${
-          size === "sm" ? "max-w-md" : "max-w-2xl"
+        className={`flex max-h-[90vh] w-full flex-col overflow-hidden rounded-t-2xl bg-white shadow-[0_20px_60px_rgba(16,24,40,0.18)] sm:max-h-[80vh] sm:rounded-2xl ${
+          size === "sm" ? "sm:max-w-md" : "sm:max-w-2xl"
         }`}
       >
         <header className="flex items-start gap-3 border-b border-line-soft px-5 py-4">
