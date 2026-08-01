@@ -6,7 +6,7 @@ Generates factual responses using Groq LLM with retrieved context.
 import logging
 from typing import Dict, Optional
 
-from .llm_client import GroqLLMClient
+from .llm_client import DEFAULT_MODEL, GroqLLMClient
 from .prompt_templates import PromptTemplates
 
 logging.basicConfig(level=logging.INFO)
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class ResponseGenerator:
     """Generates factual responses using Groq LLM."""
     
-    def __init__(self, model: str = "llama3-8b-8192", api_key: str = None):
+    def __init__(self, model: str = DEFAULT_MODEL, api_key: str = None):
         """
         Initialize response generator.
         
@@ -59,7 +59,9 @@ class ResponseGenerator:
                 {"role": "user", "content": user_prompt}
             ]
             
-            raw_response = self.llm_client.generate(messages, temperature=0.0, max_tokens=200)
+            # No explicit token cap: a reasoning model spends most of the budget
+            # thinking, and _enforce_sentence_limit is what keeps answers short.
+            raw_response = self.llm_client.generate(messages, temperature=0.0)
             
             # Citations are returned separately, so keep the prose URL-free
             cleaned_response = self.prompt_templates.clean_response(raw_response)

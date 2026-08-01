@@ -6,6 +6,7 @@ Orchestrates LLM-based response generation with retrieved context.
 import logging
 from typing import Dict, List, Optional
 
+from .llm_client import DEFAULT_MODEL
 from .response_generator import ResponseGenerator
 from ..retrieval.retrieval_pipeline import RetrievalPipeline
 from ..query_processing.scheme_resolver import SchemeResolver
@@ -26,7 +27,7 @@ class GenerationPipeline:
     """Orchestrates the generation component of RAG pipeline."""
     
     def __init__(self, 
-                 model: str = "llama-3.1-8b-instant",
+                 model: str = DEFAULT_MODEL,
                  api_key: str = None,
                  collection_name: str = "groww_corpus",
                  persist_directory: str = None):

@@ -151,9 +151,12 @@ This document outlines the detailed phase-wise architecture for building a Retri
 
 ### 3.3 Generation Component
 - **LLM Selection**:
-  - Use Groq API with Llama 3.1 8B model for fast, cost-effective inference
+  - Use Groq API with GPT-OSS 120B for fast, cost-effective inference
   - Groq provides high-speed inference with low latency
-  - Model: llama-3.1-8b-instant or mixtral-8x7b-32768
+  - Model: openai/gpt-oss-120b (Groq shuts down the Llama 3.1/3.3 models on
+    2026-08-16). It is a reasoning model, so requests run at
+    `reasoning_effort=low` and the token ceiling has to cover the thinking
+    tokens as well as the answer.
 - **Prompt Engineering**:
   - System prompt: Facts-only, no advice, concise responses
   - User prompt: Query + retrieved context
@@ -524,7 +527,7 @@ Vercel  ── Next.js app + /api/* route handlers ──┐
                                     Render ── FastAPI (uvicorn)
                                                  │
                                                  ├── data/vector_index (from git)
-                                                 └── Groq API (llama-3.1-8b-instant)
+                                                 └── Groq API (openai/gpt-oss-120b)
 ```
 
 The browser never calls Render. `frontend/app/api/query/route.ts` and
@@ -786,7 +789,7 @@ so a single always-on free service stays within the allowance.
   - Hand-rolled orchestration in `src/`, no LangChain or LlamaIndex
   - `all-MiniLM-L6-v2` on ONNX Runtime for embeddings
   - ChromaDB for vector storage
-- **LLM**: Llama 3.1 8B Instant via the Groq API
+- **LLM**: GPT-OSS 120B (`openai/gpt-oss-120b`) via the Groq API
 
 ### Frontend
 - **Framework**: Next.js (App Router) + TypeScript + React

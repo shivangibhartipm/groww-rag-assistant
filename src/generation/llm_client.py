@@ -1,6 +1,6 @@
 """
 Phase 3.3: LLM Client
-Groq API client for fast inference with Llama 3 8B model.
+Groq API client for fast inference with the GPT-OSS 120B model.
 """
 
 import logging
@@ -17,6 +17,15 @@ except ImportError:
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Groq shuts down llama-3.1-8b-instant and llama-3.3-70b-versatile on 2026-08-16.
+# https://console.groq.com/docs/deprecations
+DEFAULT_MODEL = "openai/gpt-oss-120b"
+
+# GPT-OSS is a reasoning model: it spends tokens thinking before it answers, and
+# those tokens come out of the same budget as the answer. Too small a budget and
+# the reply is truncated to nothing.
+DEFAULT_MAX_COMPLETION_TOKENS = 1024
 
 
 def _build_http_client():
@@ -36,12 +45,12 @@ def _build_http_client():
 class GroqLLMClient:
     """Groq API client for LLM inference."""
     
-    def __init__(self, model: str = "llama-3.1-8b-instant", api_key: str = None):
+    def __init__(self, model: str = DEFAULT_MODEL, api_key: str = None):
         """
         Initialize Groq LLM client.
         
         Args:
-            model: Model name (llama3-8b-8192, mixtral-8x7b-32768, etc.)
+            model: Model name (openai/gpt-oss-120b, openai/gpt-oss-20b, etc.)
             api_key: Groq API key (if None, reads from GROQ_API_KEY env var)
         """
         if not GROQ_AVAILABLE:
@@ -58,31 +67,50 @@ class GroqLLMClient:
         self.client = Groq(api_key=api_key, http_client=_build_http_client())
         logger.info(f"Groq LLM client initialized with model: {model}")
     
-    def generate(self, messages: list, temperature: float = 0.0, max_tokens: int = 500) -> str:
+    def generate(self,
+                 messages: list,
+                 temperature: float = 0.0,
+                 max_completion_tokens: int = DEFAULT_MAX_COMPLETION_TOKENS,
+                 reasoning_effort: Optional[str] = "low") -> str:
         """
         Generate response from Groq API.
         
         Args:
             messages: List of message dictionaries (role, content)
             temperature: Sampling temperature
-            max_tokens: Maximum tokens to generate
+            max_completion_tokens: Token ceiling, covering reasoning and answer
+            reasoning_effort: low/medium/high; None for non-reasoning models
             
         Returns:
             Generated response text
         """
+        # GPT-OSS rejects reasoning_format and instead puts its thinking in a
+        # separate `reasoning` field, so `content` is already answer-only.
+        params = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_completion_tokens": max_completion_tokens,
+            "include_reasoning": False,
+            "timeout": 60.0,
+        }
+        if reasoning_effort:
+            params["reasoning_effort"] = reasoning_effort
+        
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                timeout=60.0
-            )
-            
-            return response.choices[0].message.content
+            response = self.client.chat.completions.create(**params)
         except Exception as e:
             logger.error(f"Groq API error: {str(e)}")
             raise
+        
+        content = response.choices[0].message.content
+        if not content:
+            raise ValueError(
+                "Groq returned an empty message; reasoning may have exhausted "
+                f"max_completion_tokens={max_completion_tokens}"
+            )
+        
+        return content
     
     def generate_with_context(self, query: str, context: str, system_prompt: str = None) -> str:
         """
