@@ -1,0 +1,15 @@
+{
+  "text": "HDFC Mutual Fund - Statement Download Guide ELSS Lock-in Period (SEBI rule) ELSS (Equity Linked Savings Scheme) funds have a mandatory lock-in period of 3 years from the date of investment. For HDFC ELSS Tax Saver Fund, units cannot be redeemed before completion of 3 years. Download Statement Process To download capital gains statement or account statement from HDFC Mutual Fund: Visit the HDFC Mutual Fund website (www.hdfcfund.com) Login to your investor account using PAN and password Navigate to the 'Statements' or 'Reports' section Select the statement type (Capital Gains, Account Statement, etc.) Choose the date range and folio number Click on 'Download' to get the PDF statement Alternatively, you can download statements from Groww app under the 'Portfolio' section.",
+  "metadata": {
+    "url": "static://hdfc_fund_facts",
+    "scheme_name": "HDFC Fund Facts",
+    "scheme_type": "General",
+    "plan": "N/A",
+    "source_type": "static_knowledge",
+    "chunk_id": 0,
+    "total_chunks": 1,
+    "chunk_size": 120,
+    "source_url": "static://hdfc_fund_facts",
+    "content_type": "static_knowledge"
+  }
+}
